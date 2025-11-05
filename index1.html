@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Game Application</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background-size: 200% 200%;
+      animation: gradientMove 10s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #fff;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .quiz-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px 40px;
+      width: 400px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #00eaff;
+      text-shadow: 0 0 10px #00eaff;
+    }
+
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .option:hover {
+      background: rgba(0, 234, 255, 0.4);
+      transform: scale(1.05);
+    }
+
+    .btn {
+      margin-top: 20px;
+      background: #00eaff;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background: #00bcd4;
+      transform: scale(1.05);
+    }
+
+    .result {
+      font-size: 1.2rem;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz Game Application</h1>
+    <div id="quiz">
+      <div class="question" id="question">Loading question...</div>
+      <div class="options" id="options"></div>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+  <footer>SkillCraft Technology | Task 03 (Alternative)</footer>
+  <script>
+    const quizData = [
+      {
+        question: "Which language is used for web apps?",
+        options: ["Python", "Java", "JavaScript", "C++"],
+        correct: 2
+      },
+      {
+        question: "What does HTML stand for?",
+        options: [
+          "Hyper Text Markup Language",
+          "Home Tool Markup Language",
+          "Hyperlinks and Text Markup Language",
+          "Hyperlink Text Machine Language"
+        ],
+        correct: 0
+      },
+      {
+        question: "What year was JavaScript created?",
+        options: ["1995", "2000", "1998", "1992"],
+        correct: 0
+      },
+      {
+        question: "Which company developed React.js?",
+        options: ["Google", "Microsoft", "Facebook", "Amazon"],
+        correct: 2
+      },
+      {
+        question: "CSS stands for?",
+        options: [
+          "Colorful Style Sheets",
+          "Computer Style Sheets",
+          "Cascading Style Sheets",
+          "Creative Style Sheets"
+        ],
+        correct: 2
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const resultEl = document.getElementById("result");
+    const nextBtn = document.getElementById("nextBtn");
+
+    function loadQuestion() {
+      resultEl.textContent = "";
+      const q = quizData[currentQuestion];
+      questionEl.textContent = `${currentQuestion + 1}. ${q.question}`;
+      optionsEl.innerHTML = "";
+
+      q.options.forEach((option, index) => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.classList.add("option");
+        btn.onclick = () => selectAnswer(index);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(index) {
+      const q = quizData[currentQuestion];
+      const buttons = document.querySelectorAll(".option");
+
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (index === q.correct) {
+        score++;
+        buttons[index].style.background = "rgba(0,255,150,0.6)";
+      } else {
+        buttons[index].style.background = "rgba(255,50,50,0.6)";
+        buttons[q.correct].style.background = "rgba(0,255,150,0.6)";
+      }
+
+      resultEl.textContent = `Score: ${score}/${quizData.length}`;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showFinalResult();
+      }
+    }
+
+    function showFinalResult() {
+      questionEl.textContent = "🎉 Quiz Completed!";
+      optionsEl.innerHTML = "";
+      nextBtn.style.display = "none";
+      resultEl.textContent = `Your Final Score: ${score} / ${quizData.length}`;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
